@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Mapas UL</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .contenedor {
+      width: 100%;
+      max-width: 450px;
+      background: white;
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #1e293b;
+      font-size: 28px;
+    }
+
+    .subtitulo {
+      color: #64748b;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      outline: none;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+    }
+
+    .boton-buscar {
+      width: 100%;
+      padding: 15px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .boton-buscar:hover {
+      background: #1d4ed8;
+    }
+
+    #resultado {
+      margin-top: 25px;
+    }
+
+    .encontrado {
+      background: #dcfce7;
+      color: #166534;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .no-encontrado {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .boton-mapa {
+      display: block;
+      text-decoration: none;
+      background: #16a34a;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .boton-mapa:hover {
+      background: #15803d;
+    }
+
+    .pie {
+      margin-top: 25px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="contenedor">
+
+    <h1>🗺️ Buscador de Mapas UL</h1>
+
+    <div class="subtitulo">
+      Ingresa el número UL para encontrar su mapa
+    </div>
+
+    <input
+      type="text"
+      id="ul"
+      placeholder="Ej: G3504003"
+      autocomplete="off"
+    >
+
+    <button class="boton-buscar" onclick="buscarUL()">
+      🔎 BUSCAR
+    </button>
+
+    <div id="resultado"></div>
+
+    <div class="pie">
+      Sistema de búsqueda de mapas
+    </div>
+
+  </div>
+
+  <script>
+
+    const mapas = {
+
+      "G3504003":
+        "https://drive.google.com/file/d/1SAZJy93zRfHKiEtPKMHlz3Q3tWbb1GF-/view?usp=drivesdk",
+
+      "E3501003":
+        "https://drive.google.com/file/d/16Ikodbci2zHu6ItO0G6sqkDETwVsmCnX/view?usp=drivesdk"
+
+    };
+
+
+    function buscarUL() {
+
+      const ul = document
+        .getElementById("ul")
+        .value
+        .trim()
+        .toUpperCase();
+
+      const resultado = document.getElementById("resultado");
+
+      if (ul === "") {
+
+        resultado.innerHTML = `
+          <div class="no-encontrado">
+            ⚠️ Ingresa un número UL
+          </div>
+        `;
+
+        return;
+      }
+
+
+      if (mapas[ul]) {
+
+        resultado.innerHTML = `
+
+          <div class="encontrado">
+
+            ✅ <strong>UL ENCONTRADO</strong>
+
+            <br><br>
+
+            UL: <strong>${ul}</strong>
+
+          </div>
+
+          <a
+            class="boton-mapa"
+            href="${mapas[ul]}"
+            target="_blank"
+          >
+            📍 ABRIR MAPA
+          </a>
+
+        `;
+
+      } else {
+
+        resultado.innerHTML = `
+
+          <div class="no-encontrado">
+
+            ❌ <strong>UL NO ENCONTRADO</strong>
+
+            <br><br>
+
+            No existe un mapa registrado para:
+            <strong>${ul}</strong>
+
+          </div>
+
+        `;
+
+      }
+
+    }
+
+
+    document
+      .getElementById("ul")
+      .addEventListener("keypress", function(event) {
+
+        if (event.key === "Enter") {
+          buscarUL();
+        }
+
+    });
+
+  </script>
+
+</body>
+</html>
