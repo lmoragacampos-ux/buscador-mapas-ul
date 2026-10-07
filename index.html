@@ -145,157 +145,17 @@
 
   </div>
 
- <script>
+  <script>
 
-const SHEET_ID = "12dl1oQz5KxL9ocAr0nuJWlWfej4pHT4cp-mAj_mZLE8";
+    const SHEET_ID = "12dl1oQz5KxL9ocAr0nuJWlWfej4pHT4cp-mAj_mZLE8";
 
-const URL_DATOS =
-  "https://docs.google.com/spreadsheets/d/" +
-  SHEET_ID +
-  "/gviz/tq?tqx=out:json&sheet=Hoja%201";
-
-
-async function buscarUL() {
-
-  const ul = document
-    .getElementById("ul")
-    .value
-    .trim()
-    .toUpperCase();
-
-  const resultado = document.getElementById("resultado");
-
-  if (ul === "") {
-
-    resultado.innerHTML = `
-      <div class="no-encontrado">
-        ⚠️ Ingresa un número UL
-      </div>
-    `;
-
-    return;
-  }
-
-  resultado.innerHTML = `
-    <div>
-      🔎 Buscando...
-    </div>
-  `;
-
-  try {
-
-    const respuesta = await fetch(URL_DATOS);
-    const texto = await respuesta.text();
-
-    const json = JSON.parse(
-      texto.substring(47).slice(0, -2)
-    );
-
-    const filas = json.table.rows;
-
-    let encontrado = null;
-
-    for (const fila of filas) {
-
-      const ulBase = fila.c[0]?.v
-        ?.toString()
-        .trim()
-        .toUpperCase();
-
-      const link = fila.c[1]?.v;
-
-      if (ulBase === ul) {
-
-        encontrado = {
-          ul: ulBase,
-          link: link
-        };
-
-        break;
-      }
-    }
-
-    if (encontrado) {
-
-      resultado.innerHTML = `
-
-        <div class="encontrado">
-
-          ✅ <strong>UL ENCONTRADO</strong>
-
-          <br><br>
-
-          UL: <strong>${encontrado.ul}</strong>
-
-        </div>
-
-        <a
-          class="boton-mapa"
-          href="${encontrado.link}"
-          target="_blank"
-        >
-          📍 ABRIR MAPA
-        </a>
-
-      `;
-
-    } else {
-
-      resultado.innerHTML = `
-
-        <div class="no-encontrado">
-
-          ❌ <strong>UL NO ENCONTRADO</strong>
-
-          <br><br>
-
-          No existe un mapa registrado para:
-          <strong>${ul}</strong>
-
-        </div>
-
-      `;
-
-    }
-
-  } catch (error) {
-
-    resultado.innerHTML = `
-
-      <div class="no-encontrado">
-
-        ⚠️ No se pudo consultar la base de datos.
-
-        <br><br>
-
-        Revisa que la planilla esté compartida
-        como "Cualquier persona con el enlace".
-
-      </div>
-
-    `;
-
-    console.error(error);
-
-  }
-
-}
+    const URL_DATOS =
+      "https://docs.google.com/spreadsheets/d/" +
+      SHEET_ID +
+      "/gviz/tq?tqx=out:json&sheet=HOJA%201";
 
 
-document
-  .getElementById("ul")
-  .addEventListener("keypress", function(event) {
-
-    if (event.key === "Enter") {
-      buscarUL();
-    }
-
-  });
-
-</script>
-
- 
-    function buscarUL() {
+    async function buscarUL() {
 
       const ul = document
         .getElementById("ul")
@@ -316,47 +176,109 @@ document
         return;
       }
 
+      resultado.innerHTML = `
+        <div>
+          🔎 Buscando...
+        </div>
+      `;
 
-      if (mapas[ul]) {
+      try {
 
-        resultado.innerHTML = `
+        const respuesta = await fetch(URL_DATOS);
+        const texto = await respuesta.text();
 
-          <div class="encontrado">
+        const inicio = texto.indexOf("(");
+        const fin = texto.lastIndexOf(")");
 
-            ✅ <strong>UL ENCONTRADO</strong>
+        const json = JSON.parse(
+          texto.substring(inicio + 1, fin)
+        );
 
-            <br><br>
+        const filas = json.table.rows;
 
-            UL: <strong>${ul}</strong>
+        let encontrado = null;
 
-          </div>
+        for (const fila of filas) {
 
-          <a
-            class="boton-mapa"
-            href="${mapas[ul]}"
-            target="_blank"
-          >
-            📍 ABRIR MAPA
-          </a>
+          const ulBase = fila.c[0]?.v
+            ?.toString()
+            .trim()
+            .toUpperCase();
 
-        `;
+          const link = fila.c[1]?.v;
 
-      } else {
+          if (ulBase === ul) {
+
+            encontrado = {
+              ul: ulBase,
+              link: link
+            };
+
+            break;
+          }
+        }
+
+        if (encontrado) {
+
+          resultado.innerHTML = `
+
+            <div class="encontrado">
+
+              ✅ <strong>UL ENCONTRADO</strong>
+
+              <br><br>
+
+              UL: <strong>${encontrado.ul}</strong>
+
+            </div>
+
+            <a
+              class="boton-mapa"
+              href="${encontrado.link}"
+              target="_blank"
+            >
+              📍 ABRIR MAPA
+            </a>
+
+          `;
+
+        } else {
+
+          resultado.innerHTML = `
+
+            <div class="no-encontrado">
+
+              ❌ <strong>UL NO ENCONTRADO</strong>
+
+              <br><br>
+
+              No existe un mapa registrado para:
+              <strong>${ul}</strong>
+
+            </div>
+
+          `;
+
+        }
+
+      } catch (error) {
 
         resultado.innerHTML = `
 
           <div class="no-encontrado">
 
-            ❌ <strong>UL NO ENCONTRADO</strong>
+            ⚠️ No se pudo consultar la base de datos.
 
             <br><br>
 
-            No existe un mapa registrado para:
-            <strong>${ul}</strong>
+            Revisa que la planilla esté compartida
+            como "Cualquier persona con el enlace".
 
           </div>
 
         `;
+
+        console.error(error);
 
       }
 
@@ -371,7 +293,7 @@ document
           buscarUL();
         }
 
-    });
+      });
 
   </script>
 
