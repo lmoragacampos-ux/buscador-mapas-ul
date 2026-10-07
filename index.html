@@ -209,9 +209,11 @@
 
           if (ulBase === ul) {
 
-            encontrado = {
-              ul: ulBase,
-              link: link
+           encontrado = {
+  ul: ulBase,
+  link: link,
+  lector: fila.c[2]?.v || "",
+  mes: fila.c[3]?.v || ""
             };
 
             break;
@@ -228,9 +230,19 @@
 
               <br><br>
 
-              UL: <strong>${encontrado.ul}</strong>
+             UL: <strong>${encontrado.ul}</strong>
 
-            </div>
+<br><br>
+
+👤 Último lector:
+<strong>${encontrado.lector}</strong>
+
+<br><br>
+
+📅 Mes:
+<strong>${encontrado.mes}</strong>
+
+</div>
 
             <a
               class="boton-mapa"
